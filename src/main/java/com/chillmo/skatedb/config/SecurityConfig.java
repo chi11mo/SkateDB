@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity // Enables method-level security with @PreAuthorize, etc.
+@EnableMethodSecurity // Ermöglicht methodenbasierte Sicherheitsregeln mit @PreAuthorize etc.
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -25,18 +25,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable())  // Typically disabled for JWT-based APIs
+                .csrf(csrf -> csrf.disable()) // Deaktiviert CSRF für stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()  // Allow login/registration
-                        .anyRequest().authenticated()             // All other endpoints require auth
+                        .requestMatchers("/auth/**").permitAll() // Auth- und Registrierungs-Endpunkte
+                        .requestMatchers("/tricks/**").authenticated() // Absicherung der Tricks-API
+                        .anyRequest().authenticated() // Alle anderen Anfragen erfordern Authentifizierung
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults())  // or formLogin(...) if needed
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT-Filter einfügen
+                .httpBasic(Customizer.withDefaults()) // Optional: Basis-HTTP-Authentifizierung
                 .build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
