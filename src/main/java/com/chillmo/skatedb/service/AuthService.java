@@ -7,4 +7,6 @@ import com.chillmo.skatedb.dto.UserRegisterRequest;
 public interface AuthService {
     UserDTO registerUser(UserRegisterRequest registerRequest);
     String loginUser(UserLoginRequest loginRequest);
+
+    void logoutUser(String token);
 }

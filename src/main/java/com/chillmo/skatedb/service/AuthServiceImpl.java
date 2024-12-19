@@ -62,15 +62,20 @@ public class AuthServiceImpl implements AuthService {
     public String loginUser(UserLoginRequest loginRequest) {
         // Check whether loginRequest.usernameOrEmail matches username or email
         User user = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
-                .orElseThrow(() -> new InvalidLoginException("Invalid username or password"));
+                .orElseThrow(() -> new InvalidLoginException("Invalid username"+ loginRequest.getUsernameOrEmail()+" or password"));
 
         // Verify password
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new InvalidLoginException("Invalid username or password");
+            throw new InvalidLoginException("Invalid username"+ loginRequest.getUsernameOrEmail()+" or password");
         }
 
         // Generate JWT
         return jwtUtils.generateToken(user);
+    }
+
+    @Override
+    public void logoutUser(String token) {
+        //TODO Logout delte or Timeout Token
     }
 
     private UserDTO mapToDTO(User user) {

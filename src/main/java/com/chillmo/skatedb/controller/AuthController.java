@@ -3,10 +3,16 @@ package com.chillmo.skatedb.controller;
 import com.chillmo.skatedb.dto.UserDTO;
 import com.chillmo.skatedb.dto.UserLoginRequest;
 import com.chillmo.skatedb.dto.UserRegisterRequest;
+import com.chillmo.skatedb.exception.InvalidCredentialsException;
+import com.chillmo.skatedb.exception.UserAlreadyExistsException;
+import com.chillmo.skatedb.exception.InvalidTokenException;
 import com.chillmo.skatedb.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,8 +28,8 @@ public class AuthController {
     /**
      * Register a new user.
      *
-     * @param registerRequest request body containing username, email, password.
-     * @return the created UserDTO without password
+     * Returns 200 OK and the created user if successful.
+     * If the user already exists, throws UserAlreadyExistsException, which results in HTTP 409 CONFLICT.
      */
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserRegisterRequest registerRequest) {
@@ -34,8 +40,8 @@ public class AuthController {
     /**
      * Login with username/email and password.
      *
-     * @param loginRequest request body containing username/email and password.
-     * @return a JWT token or another token format
+     * Returns 200 OK and a JWT token if credentials are valid.
+     * If credentials are invalid, throws InvalidCredentialsException, resulting in HTTP 401 UNAUTHORIZED.
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginRequest loginRequest) {
@@ -44,12 +50,20 @@ public class AuthController {
     }
 
     /**
-     * Optionally add a logout endpoint if you handle stateful sessions or invalidation of tokens.
-     * For JWT (stateless), logout might just be handled client-side by discarding the token.
+     * Logout endpoint.
+     *
+     * Expects a JSON body with a "token" field:
+     * {
+     *   "token": "eyJhbGciOi..."
+     * }
+     *
+     * If the token is valid and logout is successful, returns 200 OK.
+     * If the token is invalid, throws InvalidTokenException, resulting in HTTP 401 UNAUTHORIZED.
      */
-    // @PostMapping("/logout")
-    // public ResponseEntity<Void> logout(HttpServletRequest request) {
-    //     authService.logoutUser(request);
-    //     return ResponseEntity.ok().build();
-    // }
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        authService.logoutUser(token);
+        return ResponseEntity.ok().build();
+    }
 }
