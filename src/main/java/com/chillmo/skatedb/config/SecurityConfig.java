@@ -27,12 +27,12 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Deaktiviert CSRF für stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Auth- und Registrierungs-Endpunkte
+                        .requestMatchers("/auth/**","/api/**", "/api/register").permitAll() // Auth- und Registrierungs-Endpunkte
                         .requestMatchers("/tricks/**").authenticated() // Absicherung der Tricks-API
                         .anyRequest().authenticated() // Alle anderen Anfragen erfordern Authentifizierung
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT-Filter einfügen
-                .httpBasic(Customizer.withDefaults()) // Optional: Basis-HTTP-Authentifizierung
+                //.httpBasic(Customizer.withDefaults()) // Optional: Basis-HTTP-Authentifizierung
                 .build();
     }
 

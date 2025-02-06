@@ -1,6 +1,6 @@
 package com.chillmo.skatedb.util;
 
-import com.chillmo.skatedb.entity.User;
+import com.chillmo.skatedb.user.domain.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
