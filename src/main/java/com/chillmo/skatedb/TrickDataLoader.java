@@ -1,5 +1,6 @@
 package com.chillmo.skatedb;
-import com.chillmo.skatedb.service.TrickImportService;
+
+import com.chillmo.skatedb.trick.library.service.TrickImportService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 

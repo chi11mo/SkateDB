@@ -1,9 +1,10 @@
 package com.chillmo.skatedb.user.domain;
 
-import com.chillmo.skatedb.entity.ExperienceLevel;
-import com.chillmo.skatedb.entity.Role;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

@@ -1,7 +1,10 @@
-package com.chillmo.skatedb.entity;
+package com.chillmo.skatedb.trick.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;

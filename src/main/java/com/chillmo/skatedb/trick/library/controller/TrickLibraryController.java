@@ -1,8 +1,9 @@
-package com.chillmo.skatedb.controller;
+package com.chillmo.skatedb.trick.library.controller;
 
-import com.chillmo.skatedb.entity.AvailableTrick;
-import com.chillmo.skatedb.service.TrickImportService;
-import com.chillmo.skatedb.service.TrickLibraryService;
+
+import com.chillmo.skatedb.trick.domain.Trick;
+import com.chillmo.skatedb.trick.library.service.TrickImportService;
+import com.chillmo.skatedb.trick.library.service.TrickLibraryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,26 +28,26 @@ public class TrickLibraryController {
     }
     // Hinzufügen eines neuen Tricks
     @PostMapping
-    public ResponseEntity<AvailableTrick> addTrick(@RequestBody AvailableTrick trick) {
-        AvailableTrick savedTrick = trickLibraryService.addTrick(trick);
+    public ResponseEntity<Trick> addTrick(@RequestBody Trick trick) {
+        Trick savedTrick = trickLibraryService.addTrick(trick);
         return ResponseEntity.ok(savedTrick);
     }
 
     // Abrufen eines einzelnen Tricks nach ID
     @GetMapping("/{id}")
-    public ResponseEntity<AvailableTrick> getTrickById(@PathVariable Long id) {
+    public ResponseEntity<Trick> getTrickById(@PathVariable Long id) {
         return ResponseEntity.ok(trickLibraryService.getTrickById(id));
     }
 
     // Liste aller Tricks abrufen
     @GetMapping
-    public ResponseEntity<List<AvailableTrick>> getAllTricks() {
+    public ResponseEntity<List<Trick>> getAllTricks() {
         return ResponseEntity.ok(trickLibraryService.getAllTricks());
     }
 
     // Suchen von Tricks nach Namen und Schwierigkeitsgrad
     @GetMapping("/search")
-    public ResponseEntity<List<AvailableTrick>> searchTricks(
+    public ResponseEntity<List<Trick>> searchTricks(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String difficulty) {
         return ResponseEntity.ok(trickLibraryService.searchTricks(name, difficulty));

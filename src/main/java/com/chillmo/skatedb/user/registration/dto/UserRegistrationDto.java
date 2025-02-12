@@ -1,8 +1,7 @@
 package com.chillmo.skatedb.user.registration.dto;
 
 
-import com.chillmo.skatedb.entity.Difficulty;
-import com.chillmo.skatedb.entity.ExperienceLevel;
+import com.chillmo.skatedb.user.domain.ExperienceLevel;
 import lombok.Data;
 
 @Data

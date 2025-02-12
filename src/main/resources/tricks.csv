@@ -1,4 +1,11 @@
-name,description,difficulty
-Ollie,Ein einfacher Sprung,BEGINNER
-Kickflip,Ein Trick mit Drehung,INTERMEDIATE
-Heelflip,Ähnlich wie ein Kickflip,INTERMEDIATE
+name,description,difficulty,trick_type,category,imageUrl,videoUrl,prerequisites
+Ollie,"Basic trick for skateboarding",BEGINNER,STREET,Fundamental,http://example.com/ollie.jpg,http://example.com/ollie.mp4,
+Kickflip,"Flip trick with board rotation",INTERMEDIATE,STREET,Flip Tricks,http://example.com/kickflip.jpg,http://example.com/kickflip.mp4,Ollie
+Heelflip,"Opposite of kickflip",INTERMEDIATE,STREET,Flip Tricks,http://example.com/heelflip.jpg,http://example.com/heelflip.mp4,Ollie
+Varial Kickflip,"Combination of kickflip and shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/varialkickflip.jpg,http://example.com/varialkickflip.mp4,"Kickflip;Shove-it"
+Ollie North,"Ollie directed towards a side",ADVANCED,VERT,Vert Tricks,http://example.com/ollienorth.jpg,http://example.com/ollienorth.mp4,Ollie
+Laser Flip,"Advanced flip trick requiring precise timing",EXPERT,STREET,Flip Tricks,http://example.com/laserflip.jpg,http://example.com/laserflip.mp4,"Kickflip;Heelflip"
+Backside 180,"Skateboarding spin trick",INTERMEDIATE,STREET,Spin Tricks,http://example.com/backside180.jpg,http://example.com/backside180.mp4,Ollie
+Frontside 180,"Skateboarding spin trick",INTERMEDIATE,STREET,Spin Tricks,http://example.com/frontside180.jpg,http://example.com/frontside180.mp4,Ollie
+Impossible,"Board wraps around foot during rotation",EXPERT,STREET,Advanced Tricks,http://example.com/impossible.jpg,http://example.com/impossible.mp4,"Ollie;Kickflip"
+Boneless,"Classic trick with one hand grabbing the board",BEGINNER,STREET,Old School,http://example.com/boneless.jpg,http://example.com/boneless.mp4,

@@ -1,4 +1,4 @@
-package com.chillmo.skatedb.entity;
+package com.chillmo.skatedb.user.domain;
 
 public enum ExperienceLevel {
     NOVICE,

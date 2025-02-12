@@ -1,4 +1,4 @@
-package com.chillmo.skatedb.entity;
+package com.chillmo.skatedb.trick.domain;
 
 public enum Difficulty {
     BEGINNER,

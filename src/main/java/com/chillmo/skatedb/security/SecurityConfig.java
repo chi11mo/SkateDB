@@ -1,12 +1,10 @@
-package com.chillmo.skatedb.config;
+package com.chillmo.skatedb.security;
 
-import com.chillmo.skatedb.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,7 +25,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Deaktiviert CSRF für stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**","/api/**", "/api/register").permitAll() // Auth- und Registrierungs-Endpunkte
+                        .requestMatchers("/auth/**", "/api/**", "/api/register", "/api/trick-library/**").permitAll() // Auth- und Registrierungs-Endpunkte
                         .requestMatchers("/tricks/**").authenticated() // Absicherung der Tricks-API
                         .anyRequest().authenticated() // Alle anderen Anfragen erfordern Authentifizierung
                 )
