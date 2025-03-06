@@ -58,6 +58,10 @@ public class User {
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private Stand stand;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -19,6 +19,12 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * This Sevice Register a new User.
+     *
+     * @param dto for user registration.
+     * @return the status.
+     */
     public User registerUser(UserRegistrationDto dto) {
         // Überprüfen, ob der Username oder die Email bereits existiert
         if (userRepository.existsByUsername(dto.getUsername())) {

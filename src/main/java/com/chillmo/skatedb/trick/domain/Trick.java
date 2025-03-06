@@ -41,7 +41,9 @@ public class Trick {
     private String category;
 
     private String imageUrl;
+
     private String videoUrl;
+
 
     // Selbstreferenzielle Many-to-Many Beziehung für Voraussetzungen
     @ManyToMany
