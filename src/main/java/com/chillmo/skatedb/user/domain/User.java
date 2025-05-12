@@ -1,10 +1,7 @@
 package com.chillmo.skatedb.user.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -51,8 +48,7 @@ public class User {
     private ExperienceLevel experienceLevel;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     @Builder.Default
@@ -62,8 +58,15 @@ public class User {
     @Column(length = 50)
     private Stand stand;
 
+    /**
+     * Flag, ob der User-Account aktiviert/bestätigt ist.
+     */
+    @Column(nullable = false)
+    private boolean enabled;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.enabled = false; // Standardmäßig deaktiviert bis Bestätigung
     }
 }
