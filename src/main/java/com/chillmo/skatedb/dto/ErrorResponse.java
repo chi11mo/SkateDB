@@ -1,7 +1,8 @@
 package com.chillmo.skatedb.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-import lombok.*;
 import java.time.LocalDateTime;
 
 @Data

@@ -66,7 +66,7 @@ public class UserRegistrationService {
 
         // 5) Bestätigungs-E-Mail versenden (ggf. asynchron)
         String body = emailRegisterService.createRegisterEmailBody(savedUser, token);
-        emailRegisterService.sendAsync(
+        emailService.sendAsync(
                 savedUser.getEmail(),
                 "E-Mail-Bestätigung für SkateDB",
                 body

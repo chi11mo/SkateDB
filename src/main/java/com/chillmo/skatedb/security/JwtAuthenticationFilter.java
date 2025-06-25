@@ -24,10 +24,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
 
     private static final List<String> EXCLUDE = List.of(
-            "/api/register", "/api/login", "/api/email/test"
+            "/api/register",
+            "/api/login",
+            "/api/email/test",
+            "/api/token/confirm",
+            "/api/token/renew"
     );
 
-
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return EXCLUDE.contains(request.getServletPath());
+    }
     public JwtAuthenticationFilter(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }

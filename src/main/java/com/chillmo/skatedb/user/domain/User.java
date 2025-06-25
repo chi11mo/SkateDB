@@ -1,7 +1,14 @@
 package com.chillmo.skatedb.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -20,12 +27,19 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 50)
+    @NotBlank
+    @Size(min = 3, max = 50)
     private String username;
 
     @Column(nullable = false, unique = true, length = 100)
+    @NotBlank
+    @Email
+    @Size(max = 100)
     private String email;
 
     @Column(nullable = false)
+    @NotBlank
+    @JsonIgnore // Verhindert Passwort-Exposition in JSON-Responses
     private String password;
 
     @Column(name = "created_at", updatable = false)
@@ -38,9 +52,11 @@ public class User {
     private String profilePictureUrl;
 
     @Column(length = 500)
+    @Size(max = 500)
     private String bio;
 
     @Column(length = 100)
+    @Size(max = 100)
     private String location;
 
     @Enumerated(EnumType.STRING)
@@ -68,5 +84,9 @@ public class User {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.enabled = false; // Standardmäßig deaktiviert bis Bestätigung
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
     }
 }

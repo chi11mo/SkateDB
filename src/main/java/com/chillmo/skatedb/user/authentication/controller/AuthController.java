@@ -5,13 +5,11 @@ import com.chillmo.skatedb.user.authentication.dto.LoginRequestDto;
 import com.chillmo.skatedb.user.domain.CustomUserDetails;
 import com.chillmo.skatedb.user.domain.User;
 import com.chillmo.skatedb.util.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,46 +17,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
-    @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
     }
 
-    /**
-     * Mapping the Login a user.
-     *
-     * @param loginRequest Login dto for a user to log in.
-     * @return the status of the login and gave login token.
-     */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(),
-                            loginRequest.getPassword()
-                    )
-            );
+    public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto req) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(req.getIdentifier(), req.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = ((CustomUserDetails) auth.getPrincipal()).getUser();
+        String token = jwtUtils.generateToken(user);
 
-            // Casten des Principals auf CustomUserDetails
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            User user = customUserDetails.getUser();
-
-            String token = jwtUtils.generateToken(user);
-            return ResponseEntity.ok(new JwtResponseDto(token));
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Ungültige Anmeldedaten");
-        }
+        return ResponseEntity.ok(new JwtResponseDto(token));
     }
 }

@@ -1,24 +1,25 @@
 package com.chillmo.skatedb.util;
 
 import com.chillmo.skatedb.user.domain.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import io.github.cdimascio.dotenv.Dotenv;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
 public class JwtUtils {
-    private static final Dotenv dotenv = Dotenv.configure().load();
-    public static final String JWT_SECRET_KEY = dotenv.get("JWT_SECRET_KEY");
-    private String jwtSecret = dotenv.get("JWT_SECRET_KEY");
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     @Value("${jwt.expirationMs}")
     private Long jwtExpirationMs;
@@ -60,7 +61,7 @@ public class JwtUtils {
                 .getBody();
 
         // Extrahiere die Rollen als Liste und konvertiere sie in ein Set
-        List<String> roles = claims.get("roles", List.class);
+        java.util.List<String> roles = claims.get("roles", java.util.List.class);
         return roles.stream().collect(Collectors.toSet());
     }
 

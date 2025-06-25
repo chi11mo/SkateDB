@@ -13,9 +13,12 @@ public class ConfirmationController {
     public ConfirmationController(ConfirmationTokenService svc) { this.confirmationTokenService = svc; }
 
     @GetMapping("/confirm")
-    public ResponseEntity<String> confirm(@RequestParam("token") String token) {
+    public ResponseEntity<ConfirmationResponse> confirm(@RequestParam String token) {
         confirmationTokenService.confirmToken(token);
-        return ResponseEntity.ok("E-Mail erfolgreich bestätigt!");
+        return ResponseEntity.ok(new ConfirmationResponse("Account verified"));
+    }
+
+    public record ConfirmationResponse(String message) {
     }
 
     @PostMapping("/renew")

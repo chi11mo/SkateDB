@@ -1,24 +1,20 @@
 package com.chillmo.skatedb.user.domain;
 
-import com.chillmo.skatedb.user.domain.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
 
     public CustomUserDetails(User user) {
         this.user = user;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     @Override
@@ -28,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(user.getEnabled());
+    }
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -53,8 +53,4 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
