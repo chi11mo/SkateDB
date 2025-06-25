@@ -46,3 +46,24 @@
    ```bash
    git clone https://github.com/yourusername/SkateDB.git
    cd SkateDB
+   ```
+
+2. **Build the project**:
+   ```bash
+   ./mvnw clean package
+   ```
+
+3. **Run the application**:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+   The application will start on `http://localhost:8080` by default.
+
+4. **Configuration**:
+   Create a `.env` file in `src/main/resources` or set these variables in your environment:
+   ```bash
+   jwt.secret=change_me
+   jwt.expirationMs=3600000
+   spring.mail.username=you@example.com
+   ```
