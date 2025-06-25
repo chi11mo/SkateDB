@@ -27,6 +27,12 @@ public class ConfirmationTokenService {
     }
 
 
+    /**
+     * Create and persist a new confirmation token for the given user.
+     *
+     * @param user user to generate the token for
+     * @return the created confirmation token
+     */
     public ConfirmationToken getNewConfirmationToken(User user) {
 
 
@@ -42,6 +48,11 @@ public class ConfirmationTokenService {
         return confirmationToken;
     }
 
+    /**
+     * Validate that the given token is not expired.
+     *
+     * @param confirmationToken token to check
+     */
     public void tokenExpired(ConfirmationToken confirmationToken) {
         if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new TokenExpiredException(confirmationToken.getToken());
@@ -76,14 +87,14 @@ public class ConfirmationTokenService {
     }
 
     /**
-     * Bestätigt einen Registrierungs-Token:
-     * - wirft TokenNotFoundException, wenn der Token nicht existiert
-     * - wirft TokenExpiredException, wenn er abgelaufen ist
-     * - setzt user.enabled = true und speichert den User
-     * - entfernt den Token
+     * Confirm a registration token.
+     * <p>
+     * Throws {@link TokenNotFoundException} if the token does not exist and
+     * {@link TokenExpiredException} if it is expired. On success the user is
+     * enabled and the token removed.
      *
-     * @param token der Bestätigungs-Token
-     * @return true, wenn die Bestätigung erfolgreich war
+     * @param token token to confirm
+     * @return {@code true} if confirmation succeeded
      */
     public boolean confirmToken(String token) {
         var confirmationToken = tokenRepository.findByToken(token)

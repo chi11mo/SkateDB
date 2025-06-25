@@ -23,10 +23,17 @@ public class TrickImportService {
         this.trickLibraryRepository = trickLibraryRepository;
     }
 
+    /**
+     * Import tricks from the given CSV file and persist them in the library.
+     * Existing tricks will be ignored.
+     *
+     * @param filePath path to the CSV file containing trick data
+     */
     public void importTricksFromCsv(String filePath) {
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             String[] line;
-            reader.readNext(); // Überspringe die Kopfzeile
+            // Skip the header row
+            reader.readNext();
 
             int lineNumber = 1;
             while ((line = reader.readNext()) != null) {
@@ -38,7 +45,7 @@ public class TrickImportService {
                 }
 
                 try {
-                    // CSV-Spalten:
+                    // CSV columns:
                     // 0: name
                     // 1: description
                     // 2: difficulty
@@ -46,7 +53,7 @@ public class TrickImportService {
                     // 4: category
                     // 5: imageUrl
                     // 6: videoUrl
-                    // 7: prerequisites (Trick-Namen, durch Semikolon getrennt)
+                    // 7: prerequisites (trick names separated by semicolon)
                     String name = line[0];
                     String description = line[1];
                     String difficultyStr = line[2];
@@ -56,13 +63,13 @@ public class TrickImportService {
                     String videoUrl = line[6];
                     String prerequisitesStr = line[7];
 
-                    // Enum-Typen anhand der Strings bestimmen
+                    // Determine enum values from the provided strings
                     Difficulty difficulty = Difficulty.valueOf(difficultyStr.toUpperCase());
                     TrickType trickType = TrickType.valueOf(trickTypeStr.toUpperCase());
 
-                    // Prüfen, ob der Trick bereits existiert
+                    // Check if the trick already exists
                     if (trickLibraryRepository.findByNameContaining(name).isEmpty()) {
-                        // Neuen Trick ohne Voraussetzungen erstellen
+                        // Create the new trick without prerequisites
                         Trick trick = Trick.builder()
                                 .name(name)
                                 .description(description)
@@ -73,13 +80,13 @@ public class TrickImportService {
                                 .videoUrl(videoUrl)
                                 .build();
 
-                        // Falls prerequisites angegeben wurden, diese parsen und zuordnen
+                        // Parse and assign prerequisites if provided
                         if (prerequisitesStr != null && !prerequisitesStr.trim().isEmpty()) {
                             String[] prerequisiteNames = prerequisitesStr.split(";");
                             List<Trick> prerequisitesList = new ArrayList<>();
                             for (String prereqName : prerequisiteNames) {
                                 prereqName = prereqName.trim();
-                                // Sucht nach einem Trick, dessen Name den angegebenen String enthält.
+                                // Look up a trick whose name contains the given string
                                 List<Trick> prereqTricks = trickLibraryRepository.findByNameContaining(prereqName);
                                 if (!prereqTricks.isEmpty()) {
                                     prerequisitesList.add(prereqTricks.get(0));

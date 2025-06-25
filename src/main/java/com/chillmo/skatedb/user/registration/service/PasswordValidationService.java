@@ -21,6 +21,13 @@ public class PasswordValidationService {
             );
         }
     }
+
+    /**
+     * Check if the given password satisfies the policy without throwing.
+     *
+     * @param password password to check
+     * @return true if valid according to the policy
+     */
     public boolean isValid(String password) {
         return password != null && PASSWORD_PATTERN.matcher(password).matches();
     }

@@ -16,22 +16,34 @@ public class TrickLibraryServiceImpl implements TrickLibraryService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Trick addTrick(Trick trick) {
         return trickLibraryRepository.save(trick);
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public Trick getTrickById(Long id) {
         return trickLibraryRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("Trick mit ID " + id + " nicht gefunden."));
+                new IllegalArgumentException("Trick with ID " + id + " not found."));
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<Trick> getAllTricks() {
         return trickLibraryRepository.findAll();
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public List<Trick> searchTricks(String name, String difficulty) {
         if (name != null && difficulty != null) {
             return trickLibraryRepository.findByNameContainingAndDifficulty(name, difficulty);

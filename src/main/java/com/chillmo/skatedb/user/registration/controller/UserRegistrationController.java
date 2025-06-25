@@ -24,6 +24,12 @@ public class UserRegistrationController {
     }
 
     @PostMapping()
+    /**
+     * Register a new user account.
+     *
+     * @param registrationDto user registration data
+     * @return the created user
+     */
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         User createdUser = userRegistrationService.registerUser(registrationDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);

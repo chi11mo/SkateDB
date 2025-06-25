@@ -24,25 +24,31 @@ public class JwtUtils {
     @Value("${jwt.expirationMs}")
     private Long jwtExpirationMs;
 
-    // Erzeugt einen SecretKey aus dem jwtSecret
+    // Create a signing key from the configured secret
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Token erstellen
+    /**
+     * Generate a JWT token for the given user.
+     *
+     * @param user authenticated user
+     * @return signed JWT token
+     */
     public String generateToken(User user) {
         SecretKey key = getSigningKey();
 
         return Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("roles", user.getRoles().stream().map(Enum::name).collect(Collectors.toSet())) // Rollen ins Token
+                // include user roles in the token
+                .claim("roles", user.getRoles().stream().map(Enum::name).collect(Collectors.toSet()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Username aus Token extrahieren
+    // Extract the username from the token
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -52,7 +58,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    // Rollen aus Token extrahieren
+    // Extract the roles from the token
     public Set<String> getRolesFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -60,12 +66,12 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody();
 
-        // Extrahiere die Rollen als Liste und konvertiere sie in ein Set
+        // Extract the roles as list and convert to a Set
         java.util.List<String> roles = claims.get("roles", java.util.List.class);
         return roles.stream().collect(Collectors.toSet());
     }
 
-    // Token validieren
+    // Validate the token
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -74,7 +80,7 @@ public class JwtUtils {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException ex) {
-            // Token ungültig
+            // Token is invalid
             return false;
         }
     }

@@ -30,7 +30,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
-        // important: show user not found exceptions
+        // Show "user not found" exceptions instead of hiding them
         provider.setHideUserNotFoundExceptions(false);
         return provider;
     }
@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/register", "/api/token/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                // Insert our JWT filter before username/password authentication
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();

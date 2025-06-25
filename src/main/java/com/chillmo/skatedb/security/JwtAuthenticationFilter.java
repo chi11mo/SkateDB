@@ -33,8 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip filtering for public endpoints
         return EXCLUDE.contains(request.getServletPath());
     }
+    /**
+     * Create a new JWT authentication filter.
+     */
     public JwtAuthenticationFilter(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
@@ -44,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        // überspringe, wenn es einer der Public-Pfade ist
+        // Skip processing if request is one of the public paths
         if (EXCLUDE.contains(path)) {
             chain.doFilter(request, response);
             return;

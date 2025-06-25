@@ -13,6 +13,12 @@ public class ConfirmationController {
     public ConfirmationController(ConfirmationTokenService svc) { this.confirmationTokenService = svc; }
 
     @GetMapping("/confirm")
+    /**
+     * Confirm a registration token.
+     *
+     * @param token token to verify
+     * @return confirmation message
+     */
     public ResponseEntity<ConfirmationResponse> confirm(@RequestParam String token) {
         confirmationTokenService.confirmToken(token);
         return ResponseEntity.ok(new ConfirmationResponse("Account verified"));
@@ -22,6 +28,12 @@ public class ConfirmationController {
     }
 
     @PostMapping("/renew")
+    /**
+     * Renew an expired confirmation token.
+     *
+     * @param expiredToken token that has expired
+     * @return new token with new expiration date
+     */
     public ResponseEntity<ConfirmationTokenResponseDto> renewToken(@RequestParam("token") String expiredToken) {
         var dto = confirmationTokenService.renewToken(expiredToken);
         return ResponseEntity.ok(dto);

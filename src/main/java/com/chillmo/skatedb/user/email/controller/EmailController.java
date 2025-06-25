@@ -16,9 +16,9 @@ public class EmailController {
     }
 
     /**
-     * Test-Endpoint: Sendet an die angegebene Adresse eine einfache "Guten Tag"-Mail.
+     * Test endpoint to send a simple "hello" mail to the provided address.
      * POST /api/email/test
-     * Body: { "email": "adresse@beispiel.de" }
+     * Body: { "email": "address@example.com" }
      */
     @PostMapping("/test")
     public ResponseEntity<String> sendTestEmail(@RequestBody EmailRequestDto request) {
@@ -29,8 +29,7 @@ public class EmailController {
         return ResponseEntity.ok("Test-Mail an " + to + " versendet.");
     }
     /**
-     * todo: creating conformation email. To Confirm the registration of a new @User.
-     *
+     * TODO: Create confirmation e-mail to verify new user registrations.
      */
 
 

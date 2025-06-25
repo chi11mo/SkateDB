@@ -25,6 +25,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public void send(String to, String subject, String body) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -39,12 +42,15 @@ public class EmailServiceImpl implements EmailService {
         } catch (MessagingException e) {
             logger.error("Error sending email to: {}", to, e);
             throw new IllegalStateException(
-                    "Fehler beim Versand der E-Mail an „" + to + "“", e);
+                    "Error sending e-mail to " + to, e);
         }
     }
 
     @Async
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public void sendAsync(String to, String subject, String body) {
         send(to, subject, body);
     }

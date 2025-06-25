@@ -30,6 +30,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    /**
+     * Authenticate a user and return a JWT token.
+     *
+     * @param req login credentials
+     * @return JWT token if authentication succeeds
+     */
     public ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto req) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getIdentifier(), req.getPassword())
