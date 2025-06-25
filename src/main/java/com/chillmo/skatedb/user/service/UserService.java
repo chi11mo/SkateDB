@@ -33,4 +33,13 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.confirmationTokenService = confirmationTokenService;
     }
+
+    /**
+     * Retrieve all users from the database.
+     *
+     * @return list of users
+     */
+    public java.util.List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }
