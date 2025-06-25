@@ -70,10 +70,11 @@
 
 ## Template Users
 
-When the application starts, three example users are created automatically. You can use these accounts to log in immediately.
+When the application starts, four example users are created automatically. You can use these accounts to log in immediately.
 
 | Username | Email | Password | Mastered Tricks |
 |-----------|-----------------|-------------|----------------------------------|
+| admin | admin@example.com | adminpass | |
 | tonyhawk | tony@example.com | password123 | Kickflip, Laser Flip, Ollie |
 | janedoe | jane@example.com | password123 | Heelflip, Shove-it, Ollie |
 | bobsmith | bob@example.com | password123 | Ollie |

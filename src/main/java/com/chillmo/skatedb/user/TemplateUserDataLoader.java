@@ -49,6 +49,14 @@ public class TemplateUserDataLoader implements CommandLineRunner {
     public void run(String... args) {
         List<TemplateUser> templates = List.of(
                 new TemplateUser(
+                        "admin",
+                        "admin@example.com",
+                        "adminpass",
+                        ExperienceLevel.PRO,
+                        Stand.Regular,
+                        List.of()
+                ),
+                new TemplateUser(
                         "tonyhawk",
                         "tony@example.com",
                         "password123",
@@ -85,7 +93,9 @@ public class TemplateUserDataLoader implements CommandLineRunner {
                     .experienceLevel(t.level())
                     .stand(t.stand())
                     .enabled(true)
-                    .roles(Set.of(Role.ROLE_USER))
+                    .roles(t.username().equals("admin") ?
+                            Set.of(Role.ROLE_USER, Role.ROLE_ADMIN) :
+                            Set.of(Role.ROLE_USER))
                     .build();
             User savedUser = userRepository.save(user);
 

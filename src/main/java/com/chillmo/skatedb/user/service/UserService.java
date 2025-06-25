@@ -42,4 +42,18 @@ public class UserService {
     public java.util.List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    /**
+     * Enable a user account by id.
+     *
+     * @param id user id
+     * @return the updated user
+     */
+    @org.springframework.transaction.annotation.Transactional
+    public User enableUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new com.chillmo.skatedb.user.exception.UserNotFoundException(id));
+        user.setEnabled(true);
+        return userRepository.save(user);
+    }
 }

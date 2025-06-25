@@ -3,9 +3,8 @@ package com.chillmo.skatedb.user.controller;
 import com.chillmo.skatedb.user.domain.User;
 import com.chillmo.skatedb.user.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +26,15 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    /**
+     * Enable a user by id. Only admins may perform this action.
+     */
+    @PutMapping("/{id}/enable")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> enableUser(@PathVariable Long id) {
+        userService.enableUser(id);
+        return ResponseEntity.noContent().build();
     }
 }
