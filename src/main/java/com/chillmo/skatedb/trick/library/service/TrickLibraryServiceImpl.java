@@ -1,5 +1,6 @@
 package com.chillmo.skatedb.trick.library.service;
 
+import com.chillmo.skatedb.trick.domain.Difficulty;
 import com.chillmo.skatedb.trick.domain.Trick;
 import com.chillmo.skatedb.trick.library.repository.TrickLibraryRepository;
 import org.springframework.stereotype.Service;
@@ -45,12 +46,21 @@ public class TrickLibraryServiceImpl implements TrickLibraryService {
      * {@inheritDoc}
      */
     public List<Trick> searchTricks(String name, String difficulty) {
-        if (name != null && difficulty != null) {
-            return trickLibraryRepository.findByNameContainingAndDifficulty(name, difficulty);
+        Difficulty diffEnum = null;
+        if (difficulty != null) {
+            try {
+                diffEnum = Difficulty.valueOf(difficulty.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid difficulty: " + difficulty);
+            }
+        }
+
+        if (name != null && diffEnum != null) {
+            return trickLibraryRepository.findByNameContainingAndDifficulty(name, diffEnum);
         } else if (name != null) {
             return trickLibraryRepository.findByNameContaining(name);
-        } else if (difficulty != null) {
-            return trickLibraryRepository.findByDifficulty(difficulty);
+        } else if (diffEnum != null) {
+            return trickLibraryRepository.findByDifficulty(diffEnum);
         } else {
             return trickLibraryRepository.findAll();
         }
