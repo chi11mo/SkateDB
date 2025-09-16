@@ -12,4 +12,6 @@ public interface UserTrickRepository extends JpaRepository<UserTrick, Long> {
     Optional<UserTrick> findByUserAndTrick(User user, Trick trick);
 
     List<UserTrick> findByUser(User user);
+
+    List<UserTrick> findAllByUserId(Long userId);
 }
