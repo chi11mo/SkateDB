@@ -100,4 +100,76 @@ class TrickRecommendationServiceTest {
         assertTrue(recommendations.contains(impossible), "Impossible sollte empfohlen werden");
         assertEquals(3, recommendations.size(), "Es sollten genau 3 Tricks empfohlen werden");
     }
+
+    @Test
+    void testTricksWithUnmetPrerequisitesAreFilteredOut() {
+        Trick ollie = Trick.builder()
+                .id(1L)
+                .name("Ollie")
+                .difficulty(Difficulty.BEGINNER)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick kickflip = Trick.builder()
+                .id(2L)
+                .name("Kickflip")
+                .difficulty(Difficulty.INTERMEDIATE)
+                .trickType(TrickType.STREET)
+                .prerequisites(List.of(ollie))
+                .build();
+
+        Trick varialKickflip = Trick.builder()
+                .id(3L)
+                .name("Varial Kickflip")
+                .difficulty(Difficulty.ADVANCED)
+                .trickType(TrickType.STREET)
+                .prerequisites(List.of(ollie, kickflip))
+                .build();
+
+        User user = new User();
+        user.setId(7L);
+        user.setUsername("learner");
+
+        UserTrick ollieTrick = UserTrick.builder().id(11L).user(user).trick(ollie).build();
+        when(userTrickRepository.findByUser(user)).thenReturn(List.of(ollieTrick));
+        when(trickLibraryRepository.findAll()).thenReturn(List.of(ollie, kickflip, varialKickflip));
+
+        List<Trick> recommendations = recommendationService.getRecommendedTricksForUser(user);
+
+        assertTrue(recommendations.contains(kickflip), "Kickflip sollte empfohlen werden, da alle Voraussetzungen erfüllt sind");
+        assertFalse(recommendations.contains(varialKickflip), "Varial Kickflip darf nicht empfohlen werden, da ein Prerequisite fehlt");
+        assertEquals(1, recommendations.size(), "Es sollte genau ein Trick empfohlen werden");
+    }
+
+    @Test
+    void testTricksWithoutPrerequisitesRemainAvailable() {
+        Trick shuvit = Trick.builder()
+                .id(4L)
+                .name("Shuvit")
+                .difficulty(Difficulty.BEGINNER)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick kickflip = Trick.builder()
+                .id(5L)
+                .name("Kickflip")
+                .difficulty(Difficulty.INTERMEDIATE)
+                .trickType(TrickType.STREET)
+                .prerequisites(List.of(shuvit))
+                .build();
+
+        User user = new User();
+        user.setId(2L);
+        user.setUsername("beginner");
+
+        when(userTrickRepository.findByUser(user)).thenReturn(Collections.emptyList());
+        when(trickLibraryRepository.findAll()).thenReturn(List.of(shuvit, kickflip));
+
+        List<Trick> recommendations = recommendationService.getRecommendedTricksForUser(user);
+
+        assertTrue(recommendations.contains(shuvit), "Tricks ohne Voraussetzungen sollten empfohlen werden");
+        assertFalse(recommendations.contains(kickflip), "Kickflip darf nicht empfohlen werden, wenn 'Shuvit' noch nicht gelernt wurde");
+    }
 }
