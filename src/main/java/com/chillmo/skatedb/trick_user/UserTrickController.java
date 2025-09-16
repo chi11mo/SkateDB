@@ -6,10 +6,15 @@ import com.chillmo.skatedb.trick.library.repository.TrickLibraryRepository;
 import com.chillmo.skatedb.user.domain.User;
 import com.chillmo.skatedb.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user-tricks")
@@ -43,5 +48,21 @@ public class UserTrickController {
         UserTrick userTrick = userTrickService.startTrick(user, trick);
 
         return ResponseEntity.ok(userTrick);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<UserTrick>> getUserTricks(@PathVariable Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        List<UserTrick> userTricks = userTrickService.getUserTricks(userId);
+        return ResponseEntity.ok(userTricks);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserTrick> updateTrickStatus(@PathVariable Long id,
+                                                       @RequestBody UpdateTrickStatusRequestDto dto) {
+        UserTrick updatedUserTrick = userTrickService.updateTrickStatus(id, dto.getStatus());
+        return ResponseEntity.ok(updatedUserTrick);
     }
 }
