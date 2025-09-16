@@ -7,6 +7,7 @@ import com.chillmo.skatedb.trick.domain.TrickType;
 import com.chillmo.skatedb.trick.library.repository.TrickLibraryRepository;
 import com.chillmo.skatedb.trick_user.UserTrick;
 import com.chillmo.skatedb.trick_user.UserTrickRepository;
+import com.chillmo.skatedb.user.domain.ExperienceLevel;
 import com.chillmo.skatedb.user.domain.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,7 @@ class TrickRecommendationServiceTest {
         User user = new User();
         user.setId(1L);
         user.setUsername("testuser");
+        user.setExperienceLevel(ExperienceLevel.PRO);
 
         // Simuliere, dass der User bereits 'Ollie' und 'Kickflip' gelernt hat
         UserTrick userTrick1 = UserTrick.builder().id(1L).user(user).trick(ollie).build();
@@ -130,6 +132,7 @@ class TrickRecommendationServiceTest {
         User user = new User();
         user.setId(7L);
         user.setUsername("learner");
+        user.setExperienceLevel(ExperienceLevel.PRO);
 
         UserTrick ollieTrick = UserTrick.builder().id(11L).user(user).trick(ollie).build();
         when(userTrickRepository.findByUser(user)).thenReturn(List.of(ollieTrick));
@@ -163,6 +166,7 @@ class TrickRecommendationServiceTest {
         User user = new User();
         user.setId(2L);
         user.setUsername("beginner");
+        user.setExperienceLevel(ExperienceLevel.PRO);
 
         when(userTrickRepository.findByUser(user)).thenReturn(Collections.emptyList());
         when(trickLibraryRepository.findAll()).thenReturn(List.of(shuvit, kickflip));
@@ -172,4 +176,149 @@ class TrickRecommendationServiceTest {
         assertTrue(recommendations.contains(shuvit), "Tricks ohne Voraussetzungen sollten empfohlen werden");
         assertFalse(recommendations.contains(kickflip), "Kickflip darf nicht empfohlen werden, wenn 'Shuvit' noch nicht gelernt wurde");
     }
+
+    @Test
+    void testNoviceUsersOnlyReceiveBeginnerRecommendations() {
+        Trick beginner = Trick.builder()
+                .id(10L)
+                .name("Beginner Trick")
+                .difficulty(Difficulty.BEGINNER)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick intermediate = Trick.builder()
+                .id(11L)
+                .name("Intermediate Trick")
+                .difficulty(Difficulty.INTERMEDIATE)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick advanced = Trick.builder()
+                .id(12L)
+                .name("Advanced Trick")
+                .difficulty(Difficulty.ADVANCED)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick expert = Trick.builder()
+                .id(13L)
+                .name("Expert Trick")
+                .difficulty(Difficulty.EXPERT)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        User user = new User();
+        user.setId(3L);
+        user.setUsername("novice");
+        user.setExperienceLevel(ExperienceLevel.NOVICE);
+
+        when(userTrickRepository.findByUser(user)).thenReturn(Collections.emptyList());
+        when(trickLibraryRepository.findAll()).thenReturn(List.of(beginner, intermediate, advanced, expert));
+
+        List<Trick> recommendations = recommendationService.getRecommendedTricksForUser(user);
+
+        assertTrue(recommendations.contains(beginner), "Beginner tricks should be recommended to novice users");
+        assertFalse(recommendations.contains(intermediate), "Intermediate tricks should not be recommended to novice users");
+        assertFalse(recommendations.contains(advanced), "Advanced tricks should not be recommended to novice users");
+        assertFalse(recommendations.contains(expert), "Expert tricks should not be recommended to novice users");
+        assertEquals(1, recommendations.size(), "Only beginner tricks should be recommended to novice users");
+    }
+
+    @Test
+    void testIntermediateUsersReceiveBeginnerAndIntermediateRecommendations() {
+        Trick beginner = Trick.builder()
+                .id(14L)
+                .name("Beginner Trick")
+                .difficulty(Difficulty.BEGINNER)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick intermediate = Trick.builder()
+                .id(15L)
+                .name("Intermediate Trick")
+                .difficulty(Difficulty.INTERMEDIATE)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick advanced = Trick.builder()
+                .id(16L)
+                .name("Advanced Trick")
+                .difficulty(Difficulty.ADVANCED)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        User user = new User();
+        user.setId(4L);
+        user.setUsername("intermediate");
+        user.setExperienceLevel(ExperienceLevel.INTERMEDIATE);
+
+        when(userTrickRepository.findByUser(user)).thenReturn(Collections.emptyList());
+        when(trickLibraryRepository.findAll()).thenReturn(List.of(beginner, intermediate, advanced));
+
+        List<Trick> recommendations = recommendationService.getRecommendedTricksForUser(user);
+
+        assertTrue(recommendations.contains(beginner), "Beginner tricks should be available to intermediate users");
+        assertTrue(recommendations.contains(intermediate), "Intermediate tricks should be available to intermediate users");
+        assertFalse(recommendations.contains(advanced), "Advanced tricks should not be available to intermediate users");
+        assertEquals(2, recommendations.size(), "Intermediate users should receive beginner and intermediate tricks");
+    }
+
+    @Test
+    void testSkilledUsersReceiveUpToAdvancedRecommendations() {
+        Trick beginner = Trick.builder()
+                .id(17L)
+                .name("Beginner Trick")
+                .difficulty(Difficulty.BEGINNER)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick intermediate = Trick.builder()
+                .id(18L)
+                .name("Intermediate Trick")
+                .difficulty(Difficulty.INTERMEDIATE)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick advanced = Trick.builder()
+                .id(19L)
+                .name("Advanced Trick")
+                .difficulty(Difficulty.ADVANCED)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        Trick expert = Trick.builder()
+                .id(20L)
+                .name("Expert Trick")
+                .difficulty(Difficulty.EXPERT)
+                .trickType(TrickType.STREET)
+                .prerequisites(new ArrayList<>())
+                .build();
+
+        User user = new User();
+        user.setId(5L);
+        user.setUsername("skilled");
+        user.setExperienceLevel(ExperienceLevel.SKILLED);
+
+        when(userTrickRepository.findByUser(user)).thenReturn(Collections.emptyList());
+        when(trickLibraryRepository.findAll()).thenReturn(List.of(beginner, intermediate, advanced, expert));
+
+        List<Trick> recommendations = recommendationService.getRecommendedTricksForUser(user);
+
+        assertTrue(recommendations.contains(beginner), "Beginner tricks should be available to skilled users");
+        assertTrue(recommendations.contains(intermediate), "Intermediate tricks should be available to skilled users");
+        assertTrue(recommendations.contains(advanced), "Advanced tricks should be available to skilled users");
+        assertFalse(recommendations.contains(expert), "Expert tricks should not be available to skilled users");
+        assertEquals(3, recommendations.size(), "Skilled users should receive up to advanced tricks");
+    }
+
 }
