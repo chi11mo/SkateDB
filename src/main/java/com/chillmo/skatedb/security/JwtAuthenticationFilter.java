@@ -1,5 +1,6 @@
 package com.chillmo.skatedb.security;
 
+import com.chillmo.skatedb.user.session.service.RevokedTokenService;
 import com.chillmo.skatedb.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
+    private final RevokedTokenService revokedTokenService;
 
     private static final List<String> EXCLUDE = List.of(
             "/api/register",
@@ -29,7 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/login",
             "/api/email/test",
             "/api/token/confirm",
-            "/api/token/renew"
+            "/api/token/renew",
+            "/api/auth/refresh"
     );
 
     @Override
@@ -40,8 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Create a new JWT authentication filter.
      */
-    public JwtAuthenticationFilter(JwtUtils jwtUtils) {
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, RevokedTokenService revokedTokenService) {
         this.jwtUtils = jwtUtils;
+        this.revokedTokenService = revokedTokenService;
     }
 
     @Override
@@ -57,7 +61,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            if (jwtUtils.validateToken(token)) {
+            if (jwtUtils.validateToken(token)
+                    && jwtUtils.isAccessToken(token)
+                    && !revokedTokenService.isTokenRevoked(token)) {
                 String username = jwtUtils.getUsernameFromToken(token);
                 Set<String> roles = jwtUtils.getRolesFromToken(token);
 

@@ -51,6 +51,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow /error dispatch
                         .requestMatchers("/error", "/error/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+                        .requestMatchers("/api/register", "/api/token/**").permitAll()
+                        .requestMatchers("/api/email/**", "/h2-console/**").permitAll()
                         .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
                         .requestMatchers("/api/register", "/api/token/**").permitAll()
                         .requestMatchers("/api/users/me/**").authenticated()

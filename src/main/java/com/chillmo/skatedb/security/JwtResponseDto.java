@@ -7,4 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class JwtResponseDto {
     private String token;
+    private String refreshToken;
+    private long expiresIn;
 }
