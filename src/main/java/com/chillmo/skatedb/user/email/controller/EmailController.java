@@ -1,5 +1,6 @@
 package com.chillmo.skatedb.user.email.controller;
 
+import com.chillmo.skatedb.user.email.dto.EmailConfirmationRequestDto;
 import com.chillmo.skatedb.user.email.dto.EmailRequestDto;
 import com.chillmo.skatedb.user.email.service.EmailService;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,25 @@ public class EmailController {
         return ResponseEntity.ok("Test-Mail an " + to + " versendet.");
     }
     /**
-     * TODO: Create confirmation e-mail to verify new user registrations.
+     * Send a confirmation e-mail containing a verification link.
+     * POST /api/email/confirm
+     * Body: { "email": "address@example.com", "token": "confirmation-token" }
      */
+    @PostMapping("/confirm")
+    public ResponseEntity<String> sendConfirmationEmail(@RequestBody EmailConfirmationRequestDto request) {
+        String to = request.getEmail();
+        String token = request.getToken();
+
+        String confirmationLink = "/api/token/confirm?token=" + token;
+        String subject = "Bitte bestätige deine E-Mail-Adresse";
+        String body = "<p>Hallo,</p>" +
+                "<p>bitte bestätige deine E-Mail-Adresse, indem du auf den folgenden Link klickst:</p>" +
+                "<a href=\"" + confirmationLink + "\">E-Mail bestätigen</a>";
+
+        emailService.sendAsync(to, subject, body);
+
+        return ResponseEntity.ok("Bestätigungsmail an " + to + " versendet.");
+    }
 
 
 }

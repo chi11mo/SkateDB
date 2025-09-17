@@ -25,6 +25,7 @@ This document lists the available REST endpoints provided by the SkateDB applica
 | Method | Path | Description |
 | ------ | ---- | ----------- |
 | `POST` | `/api/email/test` | Send a simple test email. |
+| `POST` | `/api/email/confirm` | Send an email containing a confirmation link for a token. |
 
 ### Trick Library
 
