@@ -52,10 +52,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Allow /error dispatch
                         .requestMatchers("/error", "/error/**").permitAll()
-                        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/api/login", "/api/register", "/api/token/**", "/api/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+                        .requestMatchers("/api/register", "/api/token/**").permitAll()
+                        .requestMatchers("/api/email/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/users/me/**").authenticated()
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 // Insert our JWT filter before username/password authentication

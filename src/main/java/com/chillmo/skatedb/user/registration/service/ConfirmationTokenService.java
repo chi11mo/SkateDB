@@ -107,6 +107,7 @@ public class ConfirmationTokenService {
         var user = confirmationToken.getUser();
         user.setEnabled(true);
         userRepository.save(user);
+        tokenRepository.delete(confirmationToken);
         return true;
     }
 }
