@@ -9,6 +9,6 @@ public class TokenNotFoundException extends RuntimeException {
 
 
         public TokenNotFoundException(String token) {
-            super("Token not found: " + token);
+            super("Token not found or already used: " + token);
         }
     }
