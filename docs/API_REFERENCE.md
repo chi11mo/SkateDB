@@ -15,10 +15,15 @@ This document lists the available REST endpoints provided by the SkateDB applica
 
 ### User Management
 
-| Method | Path | Description |
-| ------ | ---- | ----------- |
-| `GET` | `/api/users` | List all registered users. |
-| `PUT` | `/api/users/{id}/enable` | Enable a user account. |
+| Method | Path | Description | Authorization |
+| ------ | ---- | ----------- | -------------- |
+| `GET` | `/api/users` | List all registered users. | `ROLE_ADMIN` |
+| `GET` | `/api/users/me` | Retrieve the authenticated user's profile. | Authenticated user |
+| `PUT` | `/api/users/me` | Update the authenticated user's profile details. | Authenticated user |
+| `PUT` | `/api/users/me/password` | Change the authenticated user's password. | Authenticated user |
+| `DELETE` | `/api/users/me` | Permanently delete the authenticated user's account. | Authenticated user |
+| `PUT` | `/api/users/{id}/enable` | Enable a user account. | `ROLE_ADMIN` |
+| `PUT` | `/api/users/{id}/roles` | Replace the set of roles assigned to a user. | `ROLE_ADMIN` |
 
 ### Email
 
