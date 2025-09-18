@@ -7,11 +7,8 @@ import com.chillmo.skatedb.user.domain.User;
 import com.chillmo.skatedb.user.dto.ChangePasswordRequest;
 import com.chillmo.skatedb.user.dto.UpdateProfileRequest;
 import com.chillmo.skatedb.user.dto.UpdateUserRolesRequest;
-import com.chillmo.skatedb.user.email.service.EmailService;
 import com.chillmo.skatedb.user.exception.InvalidPasswordException;
 import com.chillmo.skatedb.user.exception.UserNotFoundException;
-import com.chillmo.skatedb.user.registration.service.ConfirmationTokenRepository;
-import com.chillmo.skatedb.user.registration.service.ConfirmationTokenService;
 import com.chillmo.skatedb.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,19 +31,13 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private ConfirmationTokenRepository tokenRepository;
-    @Mock
-    private EmailService emailService;
-    @Mock
     private PasswordEncoder passwordEncoder;
-    @Mock
-    private ConfirmationTokenService confirmationTokenService;
 
     private UserService userService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, tokenRepository, emailService, passwordEncoder, confirmationTokenService);
+        userService = new UserService(userRepository, passwordEncoder);
     }
 
     @Test

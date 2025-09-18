@@ -3,11 +3,8 @@ import com.chillmo.skatedb.user.domain.User;
 import com.chillmo.skatedb.user.dto.ChangePasswordRequest;
 import com.chillmo.skatedb.user.dto.UpdateProfileRequest;
 import com.chillmo.skatedb.user.dto.UpdateUserRolesRequest;
-import com.chillmo.skatedb.user.email.service.EmailService;
 import com.chillmo.skatedb.user.exception.InvalidPasswordException;
 import com.chillmo.skatedb.user.exception.UserNotFoundException;
-import com.chillmo.skatedb.user.registration.service.ConfirmationTokenRepository;
-import com.chillmo.skatedb.user.registration.service.ConfirmationTokenService;
 import com.chillmo.skatedb.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,21 +17,12 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ConfirmationTokenRepository tokenRepository;
-    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
-    private final ConfirmationTokenService confirmationTokenService;
-
     public UserService(UserRepository userRepository,
-                       ConfirmationTokenRepository tokenRepository,
-                       EmailService emailService,
-                       PasswordEncoder passwordEncoder, ConfirmationTokenService confirmationTokenService) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
-        this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-        this.confirmationTokenService = confirmationTokenService;
     }
 
     /**
