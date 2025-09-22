@@ -54,7 +54,7 @@ public class TemplateUserDataLoader implements CommandLineRunner {
                         "adminpass",
                         ExperienceLevel.PRO,
                         Stand.Regular,
-                        List.of()
+                        List.of("Kickflip", "Laser Flip", "Ollie")
                 ),
                 new TemplateUser(
                         "tonyhawk",
