@@ -83,35 +83,40 @@ public class TemplateUserDataLoader implements CommandLineRunner {
         );
 
         for (TemplateUser t : templates) {
-            if (userRepository.existsByUsername(t.username())) {
-                continue;
-            }
-            User user = User.builder()
-                    .username(t.username())
-                    .email(t.email())
-                    .password(passwordEncoder.encode(t.password()))
-                    .experienceLevel(t.level())
-                    .stand(t.stand())
-                    .enabled(true)
-                    .roles(t.username().equals("admin") ?
-                            Set.of(Role.ROLE_USER, Role.ROLE_ADMIN) :
-                            Set.of(Role.ROLE_USER))
-                    .build();
-            User savedUser = userRepository.save(user);
+            userRepository.findByUsername(t.username())
+                    .ifPresentOrElse(existingUser -> {
+                        if (!Boolean.TRUE.equals(existingUser.getEnabled())) {
+                            existingUser.setEnabled(true);
+                            userRepository.save(existingUser);
+                        }
+                    }, () -> {
+                        User user = User.builder()
+                                .username(t.username())
+                                .email(t.email())
+                                .password(passwordEncoder.encode(t.password()))
+                                .experienceLevel(t.level())
+                                .stand(t.stand())
+                                .enabled(true)
+                                .roles(t.username().equals("admin") ?
+                                        Set.of(Role.ROLE_USER, Role.ROLE_ADMIN) :
+                                        Set.of(Role.ROLE_USER))
+                                .build();
+                        User savedUser = userRepository.save(user);
 
-            for (String trickName : t.masteredTricks()) {
-                trickLibraryRepository.findByNameContaining(trickName)
-                        .stream()
-                        .findFirst()
-                        .ifPresent(trick -> {
-                            UserTrick ut = UserTrick.builder()
-                                    .user(savedUser)
-                                    .trick(trick)
-                                    .status(TrickStatus.MASTERED)
-                                    .build();
-                            userTrickRepository.save(ut);
-                        });
-            }
+                        for (String trickName : t.masteredTricks()) {
+                            trickLibraryRepository.findByNameContaining(trickName)
+                                    .stream()
+                                    .findFirst()
+                                    .ifPresent(trick -> {
+                                        UserTrick ut = UserTrick.builder()
+                                                .user(savedUser)
+                                                .trick(trick)
+                                                .status(TrickStatus.MASTERED)
+                                                .build();
+                                        userTrickRepository.save(ut);
+                                    });
+                        }
+                    });
         }
     }
 }
