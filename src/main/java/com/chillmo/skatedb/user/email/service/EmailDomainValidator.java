@@ -11,6 +11,9 @@ import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NameNotFoundException;
+
+import javax.naming.Context;
+
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -23,6 +26,7 @@ import java.util.Locale;
 public class EmailDomainValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailDomainValidator.class);
+
 
     private static final String[] RECORD_TYPES = {"MX", "A", "AAAA"};
 
@@ -38,6 +42,7 @@ public class EmailDomainValidator {
     EmailDomainValidator(DnsLookup dnsLookup) {
         this.dnsLookup = dnsLookup;
     }
+
 
     /**
      * Validates that the given e-mail address resolves to a domain that can receive mail.
@@ -84,6 +89,7 @@ public class EmailDomainValidator {
     }
 
     private boolean hasValidDnsRecords(String domain) {
+
         try {
             Attributes attributes = dnsLookup.lookup(domain);
             if (attributes == null) {
@@ -116,6 +122,29 @@ public class EmailDomainValidator {
                     ex.getMessage()
             );
             return true;
+
+        Hashtable<String, String> env = new Hashtable<>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
+
+        DirContext ctx = null;
+        try {
+            ctx = new InitialDirContext(env);
+            Attributes attributes = ctx.getAttributes(domain, new String[]{"MX", "A", "AAAA"});
+            return hasEntries(attributes, "MX")
+                    || hasEntries(attributes, "A")
+                    || hasEntries(attributes, "AAAA");
+        } catch (NamingException ex) {
+            logger.debug("DNS lookup failed for domain '{}': {}", domain, ex.getMessage());
+            return false;
+        } finally {
+            if (ctx != null) {
+                try {
+                    ctx.close();
+                } catch (NamingException e) {
+                    logger.warn("Failed to close DirContext: {}", e.getMessage());
+                }
+            }
+
         }
     }
 
@@ -126,6 +155,7 @@ public class EmailDomainValidator {
         Attribute attribute = attributes.get(key);
         return attribute != null && attribute.size() > 0;
     }
+
 
     interface DnsLookup {
         Attributes lookup(String domain) throws NamingException;
@@ -143,4 +173,5 @@ public class EmailDomainValidator {
             }
         }
     }
+
 }
