@@ -69,12 +69,24 @@ public class EmailDomainValidator {
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
 
-        try (DirContext ctx = new InitialDirContext(env)) {
+        DirContext ctx = null;
+        try {
+            ctx = new InitialDirContext(env);
             Attributes attributes = ctx.getAttributes(domain, new String[]{"MX", "A", "AAAA"});
-            return hasEntries(attributes, "MX") || hasEntries(attributes, "A") || hasEntries(attributes, "AAAA");
+            return hasEntries(attributes, "MX")
+                    || hasEntries(attributes, "A")
+                    || hasEntries(attributes, "AAAA");
         } catch (NamingException ex) {
             logger.debug("DNS lookup failed for domain '{}': {}", domain, ex.getMessage());
             return false;
+        } finally {
+            if (ctx != null) {
+                try {
+                    ctx.close();
+                } catch (NamingException e) {
+                    logger.warn("Failed to close DirContext: {}", e.getMessage());
+                }
+            }
         }
     }
 
