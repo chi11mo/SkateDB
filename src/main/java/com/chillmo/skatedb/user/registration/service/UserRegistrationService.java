@@ -1,6 +1,7 @@
 package com.chillmo.skatedb.user.registration.service;
 
 import com.chillmo.skatedb.user.domain.User;
+import com.chillmo.skatedb.user.email.service.EmailDomainValidator;
 import com.chillmo.skatedb.user.email.service.EmailService;
 import com.chillmo.skatedb.user.registration.domain.ConfirmationToken;
 import com.chillmo.skatedb.user.registration.dto.UserRegistrationDto;
@@ -20,6 +21,7 @@ public class UserRegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final PasswordValidationService passwordValidationService;
     private final EmailRegisterService emailRegisterService;
+    private final EmailDomainValidator emailDomainValidator;
 
     public UserRegistrationService(
             UserRepository userRepository,
@@ -27,7 +29,8 @@ public class UserRegistrationService {
             PasswordEncoder passwordEncoder,
             ConfirmationTokenService confirmationTokenService,
             PasswordValidationService passwordValidationService,
-            EmailRegisterService emailRegisterService
+            EmailRegisterService emailRegisterService,
+            EmailDomainValidator emailDomainValidator
     ) {
         this.userRepository = userRepository;
         this.emailService = emailService;
@@ -35,6 +38,7 @@ public class UserRegistrationService {
         this.confirmationTokenService = confirmationTokenService;
         this.passwordValidationService = passwordValidationService;
         this.emailRegisterService = emailRegisterService;
+        this.emailDomainValidator = emailDomainValidator;
     }
 
     @Transactional
@@ -46,6 +50,8 @@ public class UserRegistrationService {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new EmailAlreadyExistsException(dto.getEmail());
         }
+
+        emailDomainValidator.validateOrThrow(dto.getEmail());
 
         // 2) Passwort-Policy prüfen
         passwordValidationService.validate(dto.getPassword());
