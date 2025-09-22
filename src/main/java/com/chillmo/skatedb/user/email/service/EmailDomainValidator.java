@@ -7,7 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.naming.CommunicationException;
 import javax.naming.Context;
+import javax.naming.InvalidNameException;
+import javax.naming.NameNotFoundException;
+
+import javax.naming.Context;
+
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -20,6 +26,23 @@ import java.util.Locale;
 public class EmailDomainValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailDomainValidator.class);
+
+
+    private static final String[] RECORD_TYPES = {"MX", "A", "AAAA"};
+
+    private final DnsLookup dnsLookup;
+
+    /**
+     * Creates the validator backed by the default JNDI DNS lookup implementation.
+     */
+    public EmailDomainValidator() {
+        this(new JndiDnsLookup());
+    }
+
+    EmailDomainValidator(DnsLookup dnsLookup) {
+        this.dnsLookup = dnsLookup;
+    }
+
 
     /**
      * Validates that the given e-mail address resolves to a domain that can receive mail.
@@ -66,6 +89,40 @@ public class EmailDomainValidator {
     }
 
     private boolean hasValidDnsRecords(String domain) {
+
+        try {
+            Attributes attributes = dnsLookup.lookup(domain);
+            if (attributes == null) {
+                logger.debug("DNS lookup returned no attributes for domain '{}'", domain);
+                return false;
+            }
+
+            for (String recordType : RECORD_TYPES) {
+                if (hasEntries(attributes, recordType)) {
+                    return true;
+                }
+            }
+
+            logger.debug("Domain '{}' resolved but does not expose MX/A/AAAA records", domain);
+            return false;
+        } catch (NameNotFoundException | InvalidNameException ex) {
+            logger.debug("Domain '{}' is not present in DNS: {}", domain, ex.getMessage());
+            return false;
+        } catch (CommunicationException ex) {
+            logger.info(
+                    "DNS lookup for domain '{}' failed due to a communication problem (treating as deliverable): {}",
+                    domain,
+                    ex.getMessage()
+            );
+            return true;
+        } catch (NamingException ex) {
+            logger.info(
+                    "DNS lookup for domain '{}' could not be completed (treating as deliverable): {}",
+                    domain,
+                    ex.getMessage()
+            );
+            return true;
+
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
 
@@ -87,6 +144,7 @@ public class EmailDomainValidator {
                     logger.warn("Failed to close DirContext: {}", e.getMessage());
                 }
             }
+
         }
     }
 
@@ -97,4 +155,23 @@ public class EmailDomainValidator {
         Attribute attribute = attributes.get(key);
         return attribute != null && attribute.size() > 0;
     }
+
+
+    interface DnsLookup {
+        Attributes lookup(String domain) throws NamingException;
+    }
+
+    private static final class JndiDnsLookup implements DnsLookup {
+
+        @Override
+        public Attributes lookup(String domain) throws NamingException {
+            Hashtable<String, String> env = new Hashtable<>();
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
+
+            try (DirContext ctx = new InitialDirContext(env)) {
+                return ctx.getAttributes(domain, RECORD_TYPES);
+            }
+        }
+    }
+
 }
