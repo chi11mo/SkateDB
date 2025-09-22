@@ -83,7 +83,9 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.enabled = false; // Standardmäßig deaktiviert bis Bestätigung
+        if (!this.enabled) {
+            this.enabled = false; // Standardmäßig deaktiviert bis Bestätigung, falls nicht explizit gesetzt
+        }
     }
 
     public Boolean getEnabled() {
