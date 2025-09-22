@@ -2,6 +2,8 @@ package com.chillmo.skatedb.user;
 
 import com.chillmo.skatedb.user.domain.ExperienceLevel;
 import com.chillmo.skatedb.user.domain.User;
+import com.chillmo.skatedb.user.email.exception.InvalidEmailDomainException;
+import com.chillmo.skatedb.user.email.service.EmailDomainValidator;
 import com.chillmo.skatedb.user.email.service.EmailService;
 import com.chillmo.skatedb.user.registration.domain.ConfirmationToken;
 import com.chillmo.skatedb.user.registration.dto.UserRegistrationDto;
@@ -34,6 +36,7 @@ class UserRegistrationServiceTest {
     private UserRepository userRepository;
 
     private EmailService emailService;
+    private EmailDomainValidator emailDomainValidator;
     private PasswordEncoder passwordEncoder;
     private ConfirmationTokenService confirmationTokenService;
     private PasswordValidationService passwordValidationService;
@@ -47,10 +50,13 @@ class UserRegistrationServiceTest {
         userRepository.flush();
 
         emailService = mock(EmailService.class);
+        emailDomainValidator = mock(EmailDomainValidator.class);
         passwordEncoder = mock(PasswordEncoder.class);
         confirmationTokenService = mock(ConfirmationTokenService.class);
         passwordValidationService = spy(new PasswordValidationService());
         emailRegisterService = mock(EmailRegisterService.class);
+
+        doNothing().when(emailDomainValidator).validateOrThrow(anyString());
 
         userRegistrationService = new UserRegistrationService(
                 userRepository,
@@ -58,7 +64,8 @@ class UserRegistrationServiceTest {
                 passwordEncoder,
                 confirmationTokenService,
                 passwordValidationService,
-                emailRegisterService
+                emailRegisterService,
+                emailDomainValidator
         );
     }
 
@@ -92,6 +99,7 @@ class UserRegistrationServiceTest {
         User tokenUser = userCaptor.getValue();
         assertThat(tokenUser.getId()).isEqualTo(savedUser.getId());
 
+        verify(emailDomainValidator).validateOrThrow("fresh@example.com");
         verify(emailRegisterService).createRegisterEmailBody(same(savedUser), eq(token));
         verify(emailService).sendAsync(eq("fresh@example.com"), eq("E-Mail-Bestätigung für SkateDB"), eq("body"));
     }
@@ -116,7 +124,7 @@ class UserRegistrationServiceTest {
                 .hasMessageContaining("takenUser");
 
         verify(passwordValidationService, never()).validate(any());
-        verifyNoInteractions(passwordEncoder, confirmationTokenService, emailRegisterService, emailService);
+        verifyNoInteractions(passwordEncoder, confirmationTokenService, emailRegisterService, emailService, emailDomainValidator);
     }
 
     @Test
@@ -137,6 +145,24 @@ class UserRegistrationServiceTest {
         assertThatThrownBy(() -> userRegistrationService.registerUser(dto))
                 .isInstanceOf(EmailAlreadyExistsException.class)
                 .hasMessageContaining("duplicate@example.com");
+
+        verify(passwordValidationService, never()).validate(any());
+        verifyNoInteractions(passwordEncoder, confirmationTokenService, emailRegisterService, emailService, emailDomainValidator);
+    }
+
+    @Test
+    void registerUser_whenEmailDomainInvalid_throwsException() {
+        UserRegistrationDto dto = new UserRegistrationDto();
+        dto.setUsername("freshUser");
+        dto.setEmail("invalid@invalid.test");
+        dto.setPassword("StrongPass1!");
+
+        doThrow(new InvalidEmailDomainException("invalid@invalid.test"))
+                .when(emailDomainValidator)
+                .validateOrThrow("invalid@invalid.test");
+
+        assertThatThrownBy(() -> userRegistrationService.registerUser(dto))
+                .isInstanceOf(InvalidEmailDomainException.class);
 
         verify(passwordValidationService, never()).validate(any());
         verifyNoInteractions(passwordEncoder, confirmationTokenService, emailRegisterService, emailService);
