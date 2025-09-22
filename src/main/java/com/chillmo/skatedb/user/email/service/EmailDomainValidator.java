@@ -27,14 +27,10 @@ public class EmailDomainValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailDomainValidator.class);
 
-
     private static final String[] RECORD_TYPES = {"MX", "A", "AAAA"};
 
     private final DnsLookup dnsLookup;
 
-    /**
-     * Creates the validator backed by the default JNDI DNS lookup implementation.
-     */
     public EmailDomainValidator() {
         this(new JndiDnsLookup());
     }
@@ -43,13 +39,6 @@ public class EmailDomainValidator {
         this.dnsLookup = dnsLookup;
     }
 
-
-    /**
-     * Validates that the given e-mail address resolves to a domain that can receive mail.
-     *
-     * @param email address to validate
-     * @throws InvalidEmailDomainException if the address is empty, malformed or the domain lacks MX/A/AAAA records
-     */
     public void validateOrThrow(String email) {
         if (email == null || email.isBlank()) {
             logger.warn("Skipping e-mail send because the address is blank");
@@ -58,16 +47,12 @@ public class EmailDomainValidator {
 
         String domain = extractDomain(email);
         if (domain == null || domain.isBlank()) {
-            logger.warn("Skipping e-mail send because the address '{}' is not a valid e-mail", email);
+            logger.warn("Skipping e-mail send because '{}' is not a valid e-mail", email);
             throw new InvalidEmailDomainException(email);
         }
 
         if (!hasValidDnsRecords(domain)) {
-            logger.warn(
-                    "Skipping e-mail send because the domain '{}' (address: {}) exposes no MX or A/AAAA records",
-                    domain,
-                    email
-            );
+            logger.warn("Skipping e-mail send because domain '{}' has no MX/A/AAAA records", domain);
             throw new InvalidEmailDomainException(email, domain);
         }
     }
@@ -83,13 +68,12 @@ public class EmailDomainValidator {
             }
             return normalized.substring(atIndex + 1).toLowerCase(Locale.ROOT);
         } catch (AddressException ex) {
-            logger.debug("Invalid e-mail syntax for '{}': {}", email, ex.getMessage());
+            logger.debug("Invalid email syntax '{}': {}", email, ex.getMessage());
             return null;
         }
     }
 
     private boolean hasValidDnsRecords(String domain) {
-
         try {
             Attributes attributes = dnsLookup.lookup(domain);
             if (attributes == null) {
@@ -103,48 +87,19 @@ public class EmailDomainValidator {
                 }
             }
 
-            logger.debug("Domain '{}' resolved but does not expose MX/A/AAAA records", domain);
+            logger.debug("Domain '{}' resolved but no MX/A/AAAA records found", domain);
             return false;
         } catch (NameNotFoundException | InvalidNameException ex) {
-            logger.debug("Domain '{}' is not present in DNS: {}", domain, ex.getMessage());
+            logger.debug("Domain '{}' not present in DNS: {}", domain, ex.getMessage());
             return false;
         } catch (CommunicationException ex) {
-            logger.info(
-                    "DNS lookup for domain '{}' failed due to a communication problem (treating as deliverable): {}",
-                    domain,
-                    ex.getMessage()
-            );
+            logger.info("DNS lookup failed (communication issue) for '{}': {} -> treating as deliverable",
+                    domain, ex.getMessage());
             return true;
         } catch (NamingException ex) {
-            logger.info(
-                    "DNS lookup for domain '{}' could not be completed (treating as deliverable): {}",
-                    domain,
-                    ex.getMessage()
-            );
+            logger.info("DNS lookup failed for '{}': {} -> treating as deliverable",
+                    domain, ex.getMessage());
             return true;
-
-        Hashtable<String, String> env = new Hashtable<>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
-
-        DirContext ctx = null;
-        try {
-            ctx = new InitialDirContext(env);
-            Attributes attributes = ctx.getAttributes(domain, new String[]{"MX", "A", "AAAA"});
-            return hasEntries(attributes, "MX")
-                    || hasEntries(attributes, "A")
-                    || hasEntries(attributes, "AAAA");
-        } catch (NamingException ex) {
-            logger.debug("DNS lookup failed for domain '{}': {}", domain, ex.getMessage());
-            return false;
-        } finally {
-            if (ctx != null) {
-                try {
-                    ctx.close();
-                } catch (NamingException e) {
-                    logger.warn("Failed to close DirContext: {}", e.getMessage());
-                }
-            }
-
         }
     }
 
@@ -156,22 +111,29 @@ public class EmailDomainValidator {
         return attribute != null && attribute.size() > 0;
     }
 
-
     interface DnsLookup {
         Attributes lookup(String domain) throws NamingException;
     }
 
     private static final class JndiDnsLookup implements DnsLookup {
-
         @Override
         public Attributes lookup(String domain) throws NamingException {
             Hashtable<String, String> env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
 
-            try (DirContext ctx = new InitialDirContext(env)) {
+            DirContext ctx = null;
+            try {
+                ctx = new InitialDirContext(env);
                 return ctx.getAttributes(domain, RECORD_TYPES);
+            } finally {
+                if (ctx != null) {
+                    try {
+                        ctx.close();
+                    } catch (NamingException e) {
+                        // log only if needed
+                    }
+                }
             }
         }
     }
-
 }
