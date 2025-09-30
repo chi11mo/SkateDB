@@ -1,12 +1,55 @@
 name,description,difficulty,trick_type,category,imageUrl,videoUrl,prerequisites
 Ollie,"Basic trick for skateboarding",BEGINNER,STREET,Fundamental,http://example.com/ollie.jpg,http://example.com/ollie.mp4,
+Nollie,"Ollie performed with the front foot",BEGINNER,STREET,Fundamental,http://example.com/nollie.jpg,http://example.com/nollie.mp4,Ollie
+Switch Ollie,"Ollie executed in switch stance",BEGINNER,STREET,Fundamental,http://example.com/switch-ollie.jpg,http://example.com/switch-ollie.mp4,Ollie
+Fakie Ollie,"Ollie performed while rolling fakie",BEGINNER,STREET,Fundamental,http://example.com/fakie-ollie.jpg,http://example.com/fakie-ollie.mp4,Ollie
+Shove-it,"Board spins 180° under rider",BEGINNER,STREET,Fundamental,http://example.com/shove-it.jpg,http://example.com/shove-it.mp4,Ollie
+Pop Shove-it,"Shove-it popped higher with back foot",BEGINNER,STREET,Fundamental,http://example.com/pop-shove-it.jpg,http://example.com/pop-shove-it.mp4,Shove-it
+Frontside Shove-it,"Frontside rotation of the board 180°",BEGINNER,STREET,Fundamental,http://example.com/frontside-shove-it.jpg,http://example.com/frontside-shove-it.mp4,Shove-it
+360 Shove-it,"Board spins a full 360° under rider",INTERMEDIATE,STREET,Spin Tricks,http://example.com/360-shove-it.jpg,http://example.com/360-shove-it.mp4,"Shove-it;Pop Shove-it"
+Body Varial,"Rider rotates 180° while board stays straight",BEGINNER,STREET,Spin Tricks,http://example.com/body-varial.jpg,http://example.com/body-varial.mp4,Ollie
+Backside 180,"Rider and board spin backside 180°",INTERMEDIATE,STREET,Spin Tricks,http://example.com/backside-180.jpg,http://example.com/backside-180.mp4,Ollie
+Frontside 180,"Rider and board spin frontside 180°",INTERMEDIATE,STREET,Spin Tricks,http://example.com/frontside-180.jpg,http://example.com/frontside-180.mp4,Ollie
+Half Cab,"Fakie backside 180 with board",INTERMEDIATE,STREET,Spin Tricks,http://example.com/half-cab.jpg,http://example.com/half-cab.mp4,Fakie Ollie
+Bigspin,"Shove-it with rider spinning 180°",INTERMEDIATE,STREET,Spin Tricks,http://example.com/bigspin.jpg,http://example.com/bigspin.mp4,"Shove-it;Body Varial"
+Fakie Bigspin,"Fakie shove-it combined with body varial",INTERMEDIATE,STREET,Spin Tricks,http://example.com/fakie-bigspin.jpg,http://example.com/fakie-bigspin.mp4,"Fakie Ollie;Shove-it"
 Kickflip,"Flip trick with board rotation",INTERMEDIATE,STREET,Flip Tricks,http://example.com/kickflip.jpg,http://example.com/kickflip.mp4,Ollie
 Heelflip,"Opposite of kickflip",INTERMEDIATE,STREET,Flip Tricks,http://example.com/heelflip.jpg,http://example.com/heelflip.mp4,Ollie
-Shove-it,"Board spins 180° under rider",BEGINNER,STREET,Fundamental,http://example.com/shoveit.jpg,http://example.com/shoveit.mp4,Ollie
-Varial Kickflip,"Combination of kickflip and shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/varialkickflip.jpg,http://example.com/varialkickflip.mp4,"Kickflip;Shove-it"
-Ollie North,"Ollie directed towards a side",ADVANCED,VERT,Vert Tricks,http://example.com/ollienorth.jpg,http://example.com/ollienorth.mp4,Ollie
-Laser Flip,"Advanced flip trick requiring precise timing",EXPERT,STREET,Flip Tricks,http://example.com/laserflip.jpg,http://example.com/laserflip.mp4,"Kickflip;Heelflip"
-Backside 180,"Skateboarding spin trick",INTERMEDIATE,STREET,Spin Tricks,http://example.com/backside180.jpg,http://example.com/backside180.mp4,Ollie
-Frontside 180,"Skateboarding spin trick",INTERMEDIATE,STREET,Spin Tricks,http://example.com/frontside180.jpg,http://example.com/frontside180.mp4,Ollie
+Varial Kickflip,"Combination of kickflip and shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/varial-kickflip.jpg,http://example.com/varial-kickflip.mp4,"Kickflip;Shove-it"
+Varial Heelflip,"Heelflip mixed with frontside shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/varial-heelflip.jpg,http://example.com/varial-heelflip.mp4,"Heelflip;Frontside Shove-it"
+Hardflip,"Frontside shove-it with kickflip motion",ADVANCED,STREET,Flip Tricks,http://example.com/hardflip.jpg,http://example.com/hardflip.mp4,"Kickflip;Frontside Shove-it"
+Inward Heelflip,"Heelflip combined with backside shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/inward-heelflip.jpg,http://example.com/inward-heelflip.mp4,"Heelflip;Pop Shove-it"
+360 Flip,"Kickflip with 360 shove-it",ADVANCED,STREET,Flip Tricks,http://example.com/360-flip.jpg,http://example.com/360-flip.mp4,"Kickflip;360 Shove-it"
+Laser Flip,"Advanced flip trick requiring precise timing",EXPERT,STREET,Flip Tricks,http://example.com/laser-flip.jpg,http://example.com/laser-flip.mp4,"Heelflip;360 Shove-it"
 Impossible,"Board wraps around foot during rotation",EXPERT,STREET,Advanced Tricks,http://example.com/impossible.jpg,http://example.com/impossible.mp4,"Ollie;Kickflip"
-Boneless,"Classic trick with one hand grabbing the board",BEGINNER,STREET,Old School,http://example.com/boneless.jpg,http://example.com/boneless.mp4,
+Ollie North,"Ollie with front foot kicked north",ADVANCED,VERT,Vert Tricks,http://example.com/ollie-north.jpg,http://example.com/ollie-north.mp4,Ollie
+Manual,"Balancing on back wheels while rolling",BEGINNER,STREET,Flatground,http://example.com/manual.jpg,http://example.com/manual.mp4,Ollie
+Nose Manual,"Balancing on front wheels while rolling",INTERMEDIATE,STREET,Flatground,http://example.com/nose-manual.jpg,http://example.com/nose-manual.mp4,Manual
+Boneless,"Step-off grab with boned-out style",BEGINNER,STREET,Old School,http://example.com/boneless.jpg,http://example.com/boneless.mp4,Ollie
+No Comply,"Step-off 180° trick",BEGINNER,STREET,Old School,http://example.com/no-comply.jpg,http://example.com/no-comply.mp4,Ollie
+Wallride,"Riding the board on a wall",INTERMEDIATE,STREET,Old School,http://example.com/wallride.jpg,http://example.com/wallride.mp4,"Ollie;No Comply"
+Boardslide,"Sliding the middle of the board on a rail",INTERMEDIATE,STREET,Slide Tricks,http://example.com/boardslide.jpg,http://example.com/boardslide.mp4,Ollie
+Lipslide,"Sliding with tail going over the rail first",ADVANCED,STREET,Slide Tricks,http://example.com/lipslide.jpg,http://example.com/lipslide.mp4,Boardslide
+Bluntslide,"Tail hangs over the feature while sliding",ADVANCED,STREET,Slide Tricks,http://example.com/bluntslide.jpg,http://example.com/bluntslide.mp4,Boardslide
+50-50 Grind,"Grinding both trucks evenly",INTERMEDIATE,STREET,Grind Tricks,http://example.com/50-50-grind.jpg,http://example.com/50-50-grind.mp4,Ollie
+5-0 Grind,"Grinding on the back truck",ADVANCED,STREET,Grind Tricks,http://example.com/5-0-grind.jpg,http://example.com/5-0-grind.mp4,50-50 Grind
+Nosegrind,"Grinding on the front truck",ADVANCED,STREET,Grind Tricks,http://example.com/nosegrind.jpg,http://example.com/nosegrind.mp4,50-50 Grind
+Smith Grind,"Back truck dipped below obstacle",ADVANCED,STREET,Grind Tricks,http://example.com/smith-grind.jpg,http://example.com/smith-grind.mp4,50-50 Grind
+Feeble Grind,"Front truck floats over while back grinds",ADVANCED,STREET,Grind Tricks,http://example.com/feeble-grind.jpg,http://example.com/feeble-grind.mp4,50-50 Grind
+Crooked Grind,"Nose-pressed crooked grind",ADVANCED,STREET,Grind Tricks,http://example.com/crooked-grind.jpg,http://example.com/crooked-grind.mp4,Nosegrind
+Noseblunt Slide,"Nose pressed while tail elevated on slide",EXPERT,STREET,Slide Tricks,http://example.com/noseblunt.jpg,http://example.com/noseblunt.mp4,"Bluntslide;Nosegrind"
+Nollie Flip,"Kickflip initiated from nollie stance",ADVANCED,STREET,Flip Tricks,http://example.com/nollie-flip.jpg,http://example.com/nollie-flip.mp4,"Nollie;Kickflip"
+Switch Heelflip,"Heelflip executed switch",ADVANCED,STREET,Flip Tricks,http://example.com/switch-heelflip.jpg,http://example.com/switch-heelflip.mp4,"Switch Ollie;Heelflip"
+Indy Grab,"Back hand grabs toe edge in the air",BEGINNER,VERT,Grab Tricks,http://example.com/indy-grab.jpg,http://example.com/indy-grab.mp4,Ollie
+Tailgrab,"Back hand grabs tail in the air",BEGINNER,VERT,Grab Tricks,http://example.com/tailgrab.jpg,http://example.com/tailgrab.mp4,Ollie
+Nosegrab,"Front hand grabs nose in the air",BEGINNER,VERT,Grab Tricks,http://example.com/nosegrab.jpg,http://example.com/nosegrab.mp4,Ollie
+Backside Air,"Backside grab out of a vert ramp",INTERMEDIATE,VERT,Vert Airs,http://example.com/backside-air.jpg,http://example.com/backside-air.mp4,Indy Grab
+Frontside Air,"Frontside grab out of a vert ramp",INTERMEDIATE,VERT,Vert Airs,http://example.com/frontside-air.jpg,http://example.com/frontside-air.mp4,Indy Grab
+Melon Grab,"Front hand grabs heel edge backside",INTERMEDIATE,VERT,Grab Tricks,http://example.com/melon-grab.jpg,http://example.com/melon-grab.mp4,Indy Grab
+Method Air,"Tweaked melon grab backside",ADVANCED,VERT,Vert Airs,http://example.com/method-air.jpg,http://example.com/method-air.mp4,"Backside Air;Melon Grab"
+Lien Air,"Frontside air with leading hand grab",INTERMEDIATE,VERT,Vert Airs,http://example.com/lien-air.jpg,http://example.com/lien-air.mp4,"Frontside Air;Indy Grab"
+Japan Air,"Tucked knee frontside grab",ADVANCED,VERT,Grab Tricks,http://example.com/japan-air.jpg,http://example.com/japan-air.mp4,"Frontside Air;Melon Grab"
+Madonna,"One-footed indy grab over coping",ADVANCED,VERT,Vert Airs,http://example.com/madonna.jpg,http://example.com/madonna.mp4,"Indy Grab;Lien Air"
+Airwalk,"Kick both feet off while grabbing",ADVANCED,VERT,Vert Airs,http://example.com/airwalk.jpg,http://example.com/airwalk.mp4,"Indy Grab;Backside Air"
+McTwist,"540° flip while grabbing indy",EXPERT,VERT,Vert Spins,http://example.com/mctwist.jpg,http://example.com/mctwist.mp4,"Backside Air;Indy Grab"
+The 900,"900° spin pioneered by Tony Hawk",EXPERT,VERT,Vert Spins,http://example.com/the-900.jpg,http://example.com/the-900.mp4,"McTwist;Backside Air"
